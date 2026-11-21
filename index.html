@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tạo động lực & Lựa chọn phong cách lãnh đạo tại Highlands Coffee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!--
+  PHÍM TẮT: → ↓ Space PageDown (tới) · ← ↑ PageUp (lùi) · cuộn chuột · Home / End
+            N = bật/tắt ghi chú thuyết trình · F = toàn màn hình
+  Đổi hiệu ứng chuyển cảnh: sửa data-fx trên mỗi <section>
+  (fade, zoomin, zoomout, flip, flipx, slideup, blur, curtain, spin, skew, circle)
+  Đổi ảnh: thay link trong thẻ <img>. Sửa ghi chú: mảng NOTES ở cuối file.
+-->
+<style>
+:root{--red:#B22830;--red2:#8B1E24;--br:#3C2415;--br2:#23140B;--cr:#FAF5F0;--cr2:#F3E9DF;--gold:#D4A359;--mute:#7b6254}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#140b06;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:var(--br)}
+ul{list-style:none}
+
+/* ===== KHUNG 16:9 (1920x1080) TỰ CO GIÃN ===== */
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;overflow:hidden;perspective:2400px;
+  background:radial-gradient(1100px 600px at 100% 0,rgba(178,40,48,.12),transparent 62%),radial-gradient(900px 520px at 0 100%,rgba(212,163,89,.22),transparent 62%),var(--cr)}
+.slide{position:absolute;inset:0;padding:64px 110px 96px;display:flex;flex-direction:column;visibility:hidden;opacity:0;z-index:1}
+.slide.active{visibility:visible;opacity:1;z-index:3}
+.slide.leaving{visibility:visible;opacity:1;z-index:2}
+.slide::after{content:"HIGHLANDS COFFEE · ĐỀ TÀI 3";position:absolute;left:110px;bottom:34px;font:700 15px Montserrat;letter-spacing:.22em;color:rgba(60,36,21,.35)}
+.dk{background:radial-gradient(900px 600px at 85% 10%,rgba(178,40,48,.35),transparent 60%),radial-gradient(700px 500px at 0 100%,rgba(212,163,89,.18),transparent 60%),linear-gradient(135deg,#3C2415,#23140B);color:#f6e9dc}
+.dk::after{color:rgba(246,233,220,.35)}
+.rd{background:linear-gradient(135deg,#B22830,#7a161c);color:#fff}
+.row{display:flex}.col{display:flex;flex-direction:column}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:28px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+
+/* ===== CHỮ ===== */
+.k{display:flex;align-items:center;gap:16px;font:700 22px Montserrat;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:14px}
+.k::before{content:"";width:56px;height:5px;border-radius:5px;background:var(--red)}
+.dk .k{color:var(--gold)}.dk .k::before{background:var(--gold)}
+.t{font:800 60px/1.1 Montserrat;margin-bottom:26px}
+.t em,h1 em{font-style:normal;color:var(--red)}.dk .t em,.dk h1 em{color:var(--gold)}
+.sub{font:500 30px/1.45 'Be Vietnam Pro';opacity:.85}
+p,li{font-size:25px;line-height:1.45}
+
+/* ===== THẺ ===== */
+.c{background:#fff;border:1px solid rgba(60,36,21,.08);border-radius:28px;padding:26px 30px;box-shadow:0 18px 40px rgba(60,36,21,.12)}
+.c.r{background:linear-gradient(135deg,var(--red),var(--red2));color:#fff;border:0}
+.c.b{background:linear-gradient(135deg,#4d2e1b,var(--br2));color:#f6e9dc;border:0}
+.c.g{background:linear-gradient(135deg,#e8c07e,var(--gold));color:var(--br2);border:0}
+.c.cr{background:var(--cr2)}
+.c h3{font:800 30px/1.2 Montserrat;margin-bottom:10px}
+.c.hl{box-shadow:0 0 0 6px rgba(212,163,89,.75),0 25px 50px rgba(60,36,21,.3)}
+.ck li{position:relative;padding-left:32px;margin:9px 0}
+.ck li::before{content:"";position:absolute;left:0;top:.5em;width:14px;height:14px;border-radius:50%;background:var(--red)}
+.c.r .ck li::before,.c.b .ck li::before{background:var(--gold)}
+.chip{display:inline-block;padding:10px 24px;border-radius:99px;background:rgba(255,255,255,.12);border:1px solid rgba(212,163,89,.55);font:600 22px 'Be Vietnam Pro';margin:0 12px 12px 0}
+.chip.l{background:#fff;border-color:rgba(178,40,48,.4);color:var(--red2)}
+.band{border-radius:22px;padding:20px 30px;font:700 27px/1.4 'Be Vietnam Pro'}
+.band.r{background:var(--red);color:#fff}.band.g{background:rgba(212,163,89,.3);border:2px dashed var(--gold)}.band.b{background:var(--br);color:#f6e9dc}
+.num{font:900 88px/1 Montserrat;color:var(--red)}
+.ph{position:relative;overflow:hidden;border-radius:28px;background:linear-gradient(135deg,#8B1E24,#3C2415);box-shadow:0 20px 44px rgba(0,0,0,.28)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block;animation:kb 16s ease-in-out infinite alternate}
+.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(35,20,11,.6),transparent 55%)}
+.ph .cap{position:absolute;left:24px;bottom:18px;z-index:2;font:700 22px Montserrat;color:#fff}
+@keyframes kb{to{transform:scale(1.14) translate(-2%,-1%)}}
+
+/* ===== PHẦN TỬ XUẤT HIỆN TUẦN TỰ (stagger 0.08s) ===== */
+.rv{opacity:0;transform:translateY(34px) scale(.97);
+  transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .3s;
+  transition-delay:calc(var(--i,0)*.08s + .35s),calc(var(--i,0)*.08s + .35s),0s,0s}
+.slide.active .rv.show{opacity:1;transform:none}
+.slide:not(.active) .rv{transition-delay:0s!important}
+.noanim .rv{transition:none!important}
+
+/* ===== HIỆU ỨNG CHUYỂN SLIDE ===== */
+@keyframes i-fade{from{opacity:0}}@keyframes o-fade{to{opacity:0}}
+@keyframes i-zoomin{from{opacity:0;transform:scale(1.35)}}@keyframes o-zoomin{to{opacity:0;transform:scale(.72)}}
+@keyframes i-zoomout{from{opacity:0;transform:scale(.6)}}@keyframes o-zoomout{to{opacity:0;transform:scale(1.45)}}
+@keyframes i-flip{from{opacity:0;transform:rotateY(-90deg)}}@keyframes o-flip{to{opacity:0;transform:rotateY(90deg)}}
+@keyframes i-flipx{from{opacity:0;transform:rotateX(80deg)}}@keyframes o-flipx{to{opacity:0;transform:rotateX(-80deg)}}
+@keyframes i-slideup{from{opacity:0;transform:translateY(65%)}}@keyframes o-slideup{to{opacity:0;transform:translateY(-25%) scale(.95)}}
+@keyframes i-blur{from{opacity:0;filter:blur(26px);transform:scale(1.06)}}@keyframes o-blur{to{opacity:0;filter:blur(26px)}}
+@keyframes i-curtain{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}@keyframes o-curtain{to{opacity:0;transform:scale(.96)}}
+@keyframes i-spin{from{opacity:0;transform:rotate(-12deg) scale(.5)}}@keyframes o-spin{to{opacity:0;transform:rotate(12deg) scale(1.4)}}
+@keyframes i-skew{from{opacity:0;transform:translateX(55%) skewX(-14deg)}}@keyframes o-skew{to{opacity:0;transform:translateX(-45%) skewX(10deg)}}
+@keyframes i-circle{from{clip-path:circle(0% at 50% 50%)}to{clip-path:circle(150% at 50% 50%)}}@keyframes o-circle{to{opacity:0}}
+.in-fade{animation:i-fade .8s ease both}.out-fade{animation:o-fade .6s ease both}
+.in-zoomin{animation:i-zoomin .9s cubic-bezier(.2,.8,.2,1) both}.out-zoomin{animation:o-zoomin .7s ease both}
+.in-zoomout{animation:i-zoomout .9s cubic-bezier(.2,.8,.2,1) both}.out-zoomout{animation:o-zoomout .7s ease both}
+.in-flip{animation:i-flip .9s cubic-bezier(.2,.8,.2,1) both}.out-flip{animation:o-flip .6s ease both}
+.in-flipx{animation:i-flipx .9s cubic-bezier(.2,.8,.2,1) both}.out-flipx{animation:o-flipx .6s ease both}
+.in-slideup{animation:i-slideup .85s cubic-bezier(.2,.8,.2,1) both}.out-slideup{animation:o-slideup .7s ease both}
+.in-blur{animation:i-blur .9s ease both}.out-blur{animation:o-blur .7s ease both}
+.in-curtain{animation:i-curtain .9s cubic-bezier(.7,0,.2,1) both}.out-curtain{animation:o-curtain .8s ease both}
+.in-spin{animation:i-spin .9s cubic-bezier(.2,.8,.2,1) both}.out-spin{animation:o-spin .7s ease both}
+.in-skew{animation:i-skew .85s cubic-bezier(.2,.8,.2,1) both}.out-skew{animation:o-skew .7s ease both}
+.in-circle{animation:i-circle 1s cubic-bezier(.7,0,.2,1) both}.out-circle{animation:o-circle .9s ease both}
+
+/* ===== ẢNH ĐỘNG TRANG TRÍ (CSS/SVG) ===== */
+.ic{width:64px;height:64px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@keyframes st{0%{transform:translateY(0);opacity:0}30%{opacity:.85}100%{transform:translateY(-46px);opacity:0}}
+.steam path{fill:none;stroke:rgba(255,255,255,.8);stroke-width:9;stroke-linecap:round;animation:st 3.2s ease-in-out infinite;transform-box:fill-box}
+.steam path:nth-child(2){animation-delay:1s}.steam path:nth-child(3){animation-delay:2s}
+@keyframes drip{0%{transform:translateY(0);opacity:1}80%{transform:translateY(70px);opacity:1}100%{transform:translateY(74px);opacity:0}}
+.drip{animation:drip 1.8s ease-in infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.spin{animation:rot 30s linear infinite;transform-origin:center}.spin.f{animation-duration:6s}.spin.r{animation-direction:reverse}
+@keyframes tilt{0%,100%{transform:rotate(-13deg)}50%{transform:rotate(13deg)}}
+.tilt{animation:tilt 4s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}.pulse{animation:pulse 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes shake{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(18deg)}}.shake{animation:shake .5s ease-in-out infinite;transform-origin:12px 12px}
+@keyframes slidex{0%,100%{transform:translateX(-3px)}50%{transform:translateX(5px)}}.slidex{animation:slidex 1.2s ease-in-out infinite}
+@keyframes bnc{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-4px)}}.bn{animation:bnc 1s infinite}.bn:nth-child(2){animation-delay:.2s}.bn:nth-child(3){animation-delay:.4s}
+@keyframes twk{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.25) rotate(18deg)}}.twk{animation:twk 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}.blink{animation:blink 1s infinite}
+@keyframes flow{from{background-position:0 0}to{background-position:80px 0}}
+.flow{height:22px;border-radius:12px;background:repeating-linear-gradient(90deg,var(--gold) 0 24px,transparent 24px 40px);background-size:80px 100%;animation:flow 1.2s linear infinite;opacity:.9}
+.bean{position:absolute;bottom:-40px;width:16px;height:24px;border-radius:50%;background:#6b4226;opacity:.18;z-index:0;animation:drift linear infinite}
+.bean::after{content:"";position:absolute;left:50%;top:10%;bottom:10%;width:2px;background:#2a170c;transform:translateX(-50%) rotate(12deg)}
+@keyframes drift{to{transform:translateY(-1200px) rotate(540deg)}}
+.rg{stroke-dashoffset:440;transition:stroke-dashoffset 1.8s cubic-bezier(.2,.8,.2,1) .9s}
+.slide.active .rg{stroke-dashoffset:var(--off)}
+.ringw{position:relative;width:210px;height:210px;margin:0 auto 14px}
+.ringw svg{width:100%;height:100%}.ringw b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:900 46px Montserrat;color:var(--red)}
+.tier{flex:1;display:flex;align-items:center;justify-content:center;font:700 27px Montserrat;color:#fff;cursor:pointer;transition:filter .3s}
+.tier:hover{filter:brightness(1.25)}
+.pyr{width:760px;height:620px;clip-path:polygon(28% 0,72% 0,100% 100%,0 100%);display:flex;flex-direction:column;gap:6px}
+.step{border-radius:16px 16px 0 0;padding:14px 16px;font:700 22px/1.25 Montserrat;color:#fff;display:flex;align-items:flex-end}
+
+/* ===== ĐIỀU KHIỂN (ngoài khung slide) ===== */
+#bar{position:fixed;left:0;top:0;width:100%;height:6px;background:rgba(255,255,255,.12);z-index:50}
+#bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#B22830,#D4A359);box-shadow:0 0 12px rgba(212,163,89,.8);transition:width .7s ease}
+#count{position:fixed;right:22px;bottom:16px;z-index:50;font:800 22px Montserrat;color:#fff;background:rgba(35,20,11,.78);padding:8px 18px;border-radius:99px;letter-spacing:.08em}
+#ctl{position:fixed;left:18px;bottom:14px;z-index:50;display:flex;gap:8px}
+#ctl button{border:1px solid rgba(212,163,89,.5);background:rgba(35,20,11,.78);color:#f6e9dc;font:600 15px 'Be Vietnam Pro';padding:10px 18px;border-radius:99px;cursor:pointer;transition:.2s}
+#ctl button:hover,#ctl button.on{background:var(--red);border-color:var(--red)}
+#notes{position:fixed;left:50%;bottom:70px;transform:translate(-50%,20px);width:min(1100px,92vw);z-index:60;background:rgba(35,20,11,.96);color:#f6e9dc;border:1px solid var(--gold);border-radius:20px;padding:20px 26px;opacity:0;pointer-events:none;transition:.3s;font:400 20px/1.55 'Be Vietnam Pro'}
+#notes.open{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#notes b{display:block;font:700 14px Montserrat;letter-spacing:.2em;color:var(--gold);margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<!-- Biểu tượng tĩnh dùng chung -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></symbol>
+ <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></symbol>
+ <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+ <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+</svg>
+
+<div id="bar"><i></i></div>
+<div id="stage">
+
+<!-- ============ 1. TRANG BÌA ============ -->
+<section class="slide dk" data-fx="blur" data-title="Trang bìa">
+ <div class="row" style="flex:1;align-items:center;gap:40px">
+  <div style="flex:1.2">
+   <div class="k rv">Quản trị nhân sự · Đề tài 3</div>
+   <h1 class="rv" style="font:800 76px/1.08 Montserrat;margin-bottom:28px">TẠO ĐỘNG LỰC &amp; LỰA CHỌN <em>PHONG CÁCH LÃNH ĐẠO</em> TẠI HIGHLANDS COFFEE</h1>
+   <p class="rv sub" style="margin-bottom:30px">Bài toán giữ chân nhân sự Gen Z trong môi trường chuỗi F&amp;B hiện đại</p>
+   <div class="rv"><span class="chip">Đề tài 3</span><span class="chip">Nhóm thực hiện</span><span class="chip">Maslow · Herzberg · Hersey &amp; Blanchard</span></div>
+  </div>
+  <div class="rv" style="flex:.8;position:relative;height:800px">
+   <svg viewBox="0 0 700 700" style="position:absolute;left:0;top:20px;width:700px"><circle class="spin" cx="350" cy="350" r="338" fill="none" stroke="#D4A359" stroke-width="3" stroke-dasharray="4 16" stroke-linecap="round"/></svg>
+   <div class="ph" style="position:absolute;left:30px;top:50px;width:640px;height:640px;border-radius:50%;border:8px solid var(--gold)"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=75" alt="Cà phê" referrerpolicy="no-referrer" onerror="this.remove()"></div>
+   <svg viewBox="0 0 400 470" style="position:absolute;right:-40px;bottom:-10px;width:440px;filter:drop-shadow(0 30px 30px rgba(0,0,0,.55))">
+    <defs>
+     <linearGradient id="mt" x1="0" x2="1"><stop offset="0" stop-color="#8d949b"/><stop offset=".5" stop-color="#f1f3f5"/><stop offset="1" stop-color="#858b92"/></linearGradient>
+     <linearGradient id="gl" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset=".5" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#fff" stop-opacity=".3"/></linearGradient>
+    </defs>
+    <ellipse cx="200" cy="436" rx="170" ry="26" fill="#140b06"/><ellipse cx="200" cy="428" rx="158" ry="21" fill="#F3E9DF"/>
+    <path d="M295 330Q352 330 352 368Q352 408 286 400" fill="none" stroke="#B22830" stroke-width="15" stroke-linecap="round"/>
+    <path d="M104 300H296L281 412Q278 424 266 424H134Q122 424 119 412Z" fill="#B22830"/>
+    <path d="M112 338H288L281 412Q278 424 266 424H134Q122 424 119 412Z" fill="#3C2415"/>
+    <path d="M104 300H296L281 412Q278 424 266 424H134Q122 424 119 412Z" fill="url(#gl)"/>
+    <ellipse cx="200" cy="300" rx="120" ry="12" fill="#cfd3d7"/>
+    <path d="M148 298L152 204Q152 194 162 194H238Q248 194 248 204L252 298Z" fill="url(#mt)"/>
+    <path d="M160 194Q200 138 240 194Z" fill="url(#mt)"/><circle cx="200" cy="134" r="10" fill="#d9dde0"/>
+    <circle class="drip" cx="200" cy="312" r="6" fill="#3C2415"/>
+    <g class="steam"><path d="M170 112C150 88 190 66 168 40"/><path d="M200 106C182 80 222 58 200 28"/><path d="M232 112C212 88 252 66 230 40"/></g>
+   </svg>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 2. AGENDA ============ -->
+<section class="slide" data-fx="slideup" data-title="Tổng quan nội dung">
+ <div class="row" style="flex:1;gap:60px;align-items:center">
+  <div style="width:520px">
+   <div class="k rv">Agenda</div>
+   <h2 class="t rv">Tổng quan <em>nội dung</em></h2>
+   <p class="rv" style="opacity:.8">Bốn phần trình bày: từ lý thuyết đến thực trạng, nguyên nhân và giải pháp. Bấm vào từng thẻ để nhảy tới phần đó.</p>
+   <svg class="rv" viewBox="0 0 240 240" style="width:300px;margin-top:20px"><circle class="spin r" cx="120" cy="120" r="110" fill="none" stroke="#D4A359" stroke-width="3" stroke-dasharray="3 12" stroke-linecap="round"/><g class="spin f" style="transform-origin:120px 120px"><ellipse cx="120" cy="120" rx="46" ry="66" fill="#B22830" transform="rotate(30 120 120)"/><path d="M96 78C130 100 110 140 144 162" fill="none" stroke="#FAF5F0" stroke-width="6" stroke-linecap="round"/></g></svg>
+  </div>
+  <div class="g2" style="flex:1;gap:30px">
+   <div class="c r rv" data-go="2" style="cursor:pointer;min-height:330px"><div class="num" style="color:var(--gold);font-size:70px">01</div><h3 style="margin-top:12px">Cơ sở lý thuyết tạo động lực &amp; lãnh đạo</h3><p>Maslow · Herzberg · Hersey &amp; Blanchard</p></div>
+   <div class="c b rv" data-go="5" style="cursor:pointer;min-height:330px"><div class="num" style="color:var(--gold);font-size:70px">02</div><h3 style="margin-top:12px">Thực trạng Highlands Coffee &amp; biến động nhân sự Gen Z (2024–2026)</h3></div>
+   <div class="c g rv" data-go="11" style="cursor:pointer;min-height:330px"><div class="num" style="color:var(--red2);font-size:70px">03</div><h3 style="margin-top:12px">Phân tích chuyên sâu 4 nguyên nhân cốt lõi</h3><p>Từ tình huống quản lý anh T. tại chi nhánh X</p></div>
+   <div class="c rv" data-go="14" style="cursor:pointer;min-height:330px"><div class="num" style="font-size:70px">04</div><h3 style="margin-top:12px">Đề xuất giải pháp ngắn hạn &amp; dài hạn</h3><p>Ổn định vận hành → phát triển bền vững</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 3. MASLOW ============ -->
+<section class="slide" data-fx="flip" data-title="Maslow">
+ <div class="k rv">Phần 1 · Cơ sở lý thuyết</div>
+ <h2 class="t rv">Thuyết nhu cầu của <em>Maslow</em> trong ngành F&amp;B</h2>
+ <div class="row" style="flex:1;gap:56px;align-items:center">
+  <div class="rv pyr">
+   <div class="tier" data-ph="3" style="background:#D4A359;color:#23140B">Tự thể hiện</div>
+   <div class="tier" data-ph="2" style="background:#B22830">Được tôn trọng</div>
+   <div class="tier" data-ph="2" style="background:#8B1E24">Xã hội</div>
+   <div class="tier" data-ph="1" style="background:#5a3a26">An toàn</div>
+   <div class="tier" data-ph="1" style="background:#3C2415">Sinh lý</div>
+  </div>
+  <div style="flex:1;display:grid;gap:28px">
+   <div class="c b rv" data-card="1"><div class="chip" style="margin-bottom:12px">GIAI ĐOẠN ĐẦU · Sinh lý &amp; An toàn</div>
+    <p>Nhân viên part-time đi làm trước hết để trang trải cuộc sống: <b>lương theo giờ, phụ cấp ca gãy, tiền tips</b> và <b>lịch làm việc ổn định</b>.</p></div>
+   <div class="c r rv" data-card="2"><div class="chip" style="margin-bottom:12px">GIAI ĐOẠN GẮN BÓ · Xã hội &amp; Được tôn trọng</div>
+    <p>Khi thu nhập cơ bản đã đủ, điều giữ chân họ lâu dài là <b>đồng nghiệp hòa đồng, hỗ trợ nhau lúc đông khách</b> và <b>quản lý biết lắng nghe, góp ý riêng tư, không quát mắng trước mặt khách hàng</b>.</p></div>
+   <p class="rv" style="opacity:.7;font-size:21px">Rê chuột hoặc bấm vào từng tầng của tháp để làm nổi bật giai đoạn tương ứng.</p>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 4. HERZBERG ============ -->
+<section class="slide" data-fx="zoomin" data-title="Herzberg">
+ <div class="k rv">Phần 1 · Cơ sở lý thuyết</div>
+ <h2 class="t rv">Thuyết hai nhân tố của <em>Herzberg</em></h2>
+ <div class="row" style="flex:1;gap:20px;align-items:stretch">
+  <div class="c b rv col" style="flex:1">
+   <div class="chip" style="align-self:flex-start">YẾU TỐ DUY TRÌ · Hygiene Factors</div>
+   <ul class="ck" style="margin:12px 0 18px"><li>Lương cơ bản</li><li>Điều kiện làm việc tại quầy/bếp</li><li>Quy định chấm công</li><li>Phạt lỗi</li></ul>
+   <div class="band r" style="margin-top:auto;font-size:24px">Nếu thiếu hoặc quá khắt khe → gây <u>bất mãn, chán nản tức thì</u>.</div>
+  </div>
+  <div class="rv" style="width:240px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+   <svg viewBox="0 0 260 320" width="240"><g class="tilt" style="transform-origin:130px 150px"><rect x="14" y="142" width="232" height="16" rx="8" fill="#3C2415"/><circle cx="48" cy="104" r="30" fill="#8B1E24"/><text x="48" y="116" font-size="34" text-anchor="middle">😠</text><circle cx="212" cy="104" r="30" fill="#D4A359"/><text x="212" y="116" font-size="34" text-anchor="middle">😊</text></g><polygon points="130,150 96,262 164,262" fill="#B22830"/><rect x="76" y="262" width="108" height="12" rx="6" fill="#3C2415"/></svg>
+   <b style="font:800 20px Montserrat;letter-spacing:.14em;text-align:center;margin-top:6px">CÁN CÂN<br>TÂM LÝ</b>
+  </div>
+  <div class="c g rv col" style="flex:1">
+   <div class="chip l" style="align-self:flex-start">YẾU TỐ THÚC ĐẨY · Motivators</div>
+   <ul class="ck" style="margin:12px 0 18px"><li>Cảm giác thành tựu khi vượt qua ca cao điểm</li><li>Sự ghi nhận của quản lý</li><li>Trách nhiệm được giao</li><li>Cơ hội thăng tiến lên Trưởng ca</li></ul>
+   <div class="band b" style="margin-top:auto;font-size:24px">Chỉ tăng lương mà thiếu khen ngợi/trao quyền → nhân viên chỉ dừng ở mức “không bất mãn”, thiếu động lực cống hiến.</div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 5. HERSEY & BLANCHARD ============ -->
+<section class="slide" data-fx="circle" data-title="Lãnh đạo tình huống">
+ <div class="row" style="flex:1;gap:44px;align-items:center">
+  <div style="width:430px">
+   <div class="k rv">Phần 1 · Cơ sở lý thuyết</div>
+   <h2 class="t rv" style="font-size:50px">Lãnh đạo <em>tình huống</em> Hersey &amp; Blanchard</h2>
+   <p class="rv" style="font-size:24px"><b>Không có phong cách lãnh đạo nào là vạn năng.</b> Quản lý phải linh hoạt thay đổi cách dẫn dắt dựa trên <b>Độ trưởng thành trong công việc</b> (Năng lực chuyên môn + Thiện chí/Sự tự tin) của từng nhóm nhân viên.</p>
+   <div class="rv row" style="gap:14px;margin-top:24px;flex-wrap:wrap"><span class="chip l">↑ Thiện chí</span><span class="chip l">→ Năng lực</span></div>
+  </div>
+  <div class="rv" style="flex:1;position:relative">
+   <div class="g2" style="gap:30px;grid-template-rows:1fr 1fr;height:790px">
+    <div class="c r"><div class="chip" style="margin-bottom:8px">① CHỈ ĐẠO · Directing – Độc đoán</div><ul class="ck" style="font-size:22px"><li style="font-size:22px"><b>Mức độ:</b> năng lực thấp, chưa quen việc</li><li style="font-size:22px"><b>Tại quán:</b> nhân viên mới vào nghề (trainee/part-time mới)</li><li style="font-size:22px"><b>Cách quản lý:</b> cầm tay chỉ việc từng bước pha chế, phục vụ; quy định rõ ràng, giám sát sát sao</li></ul></div>
+    <div class="c g"><div class="chip l" style="margin-bottom:8px">④ ỦY QUYỀN · Delegating – Tự do</div><ul class="ck" style="font-size:22px"><li style="font-size:22px"><b>Mức độ:</b> năng lực cao + thiện chí cao</li><li style="font-size:22px"><b>Tại quán:</b> nhân sự nòng cốt, Trưởng ca (Shift Leader)</li><li style="font-size:22px"><b>Cách quản lý:</b> tin tưởng giao quyền điều phối ca, tự chủ xử lý tại quầy, chỉ theo dõi kết quả</li></ul></div>
+    <div class="c b"><div class="chip" style="margin-bottom:8px">② CHỈ DẪN · Coaching – Linh hoạt</div><ul class="ck" style="font-size:22px"><li style="font-size:22px"><b>Mức độ:</b> bắt đầu biết việc, thiếu kinh nghiệm, dễ nản lòng</li><li style="font-size:22px"><b>Tại quán:</b> đã qua thử việc nhưng còn lúng túng giờ cao điểm</li><li style="font-size:22px"><b>Cách quản lý:</b> vừa hướng dẫn quy trình vừa giải thích lý do, động viên kịp thời để giữ lửa</li></ul></div>
+    <div class="c"><div class="chip l" style="margin-bottom:8px">③ THAM GIA · Participating – Dân chủ</div><ul class="ck" style="font-size:22px"><li style="font-size:22px"><b>Mức độ:</b> năng lực cao (thạo việc), thiện chí thấp (bất mãn)</li><li style="font-size:22px"><b>Tại quán:</b> nhân viên cũ làm lâu nhưng giảm nhiệt tình, chán việc</li><li style="font-size:22px"><b>Cách quản lý:</b> lắng nghe tâm tư, khuyến khích góp ý cải thiện ca làm, ghi nhận đóng góp</li></ul></div>
+   </div>
+   <div class="pulse" style="position:absolute;left:25%;top:50%;margin:-26px 0 0 -26px;width:52px;height:52px;border-radius:50%;background:var(--br);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;z-index:2">↓</div>
+   <div class="pulse" style="position:absolute;left:50%;top:75%;margin:-26px 0 0 -26px;width:52px;height:52px;border-radius:50%;background:var(--br);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;z-index:2">→</div>
+   <div class="pulse" style="position:absolute;left:75%;top:50%;margin:-26px 0 0 -26px;width:52px;height:52px;border-radius:50%;background:var(--br);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;z-index:2">↑</div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 6. QUY MÔ & ĐẶC ĐIỂM ============ -->
+<section class="slide" data-fx="curtain" data-title="Quy mô & đặc điểm nhân sự">
+ <div class="k rv">Phần 2 · Thực trạng Highlands Coffee</div>
+ <h2 class="t rv" style="margin-bottom:18px">Quy mô &amp; đặc điểm <em>nhân sự</em></h2>
+ <div class="row" style="flex:1;gap:34px">
+  <div class="col" style="flex:1.05;gap:22px">
+   <div class="rv band r" style="font:800 22px Montserrat;letter-spacing:.14em;text-align:center">PROUDLY BORN FROM THE VIET’S LAND SINCE 1999</div>
+   <div class="g2" style="flex:1;gap:22px">
+    <div class="c rv"><div class="num"><span class="count" data-to="947">0</span></div><p>cửa hàng tại Việt Nam (cuối năm 2025)</p></div>
+    <div class="c rv"><div class="num"><span class="count" data-to="985">0</span></div><p>cửa hàng toàn hệ thống (Việt Nam &amp; Philippines)</p></div>
+    <div class="c rv"><div class="num"><span class="count" data-to="134">0</span></div><p>cửa hàng mở mới trong năm 2025</p></div>
+    <div class="c r rv"><div class="num" style="color:#fff"><span class="count" data-pre="&gt; " data-to="12000">0</span></div><p>nhân viên toàn chuỗi (thông tin công bố năm 2026)</p></div>
+   </div>
+  </div>
+  <div class="col" style="flex:.95;gap:22px">
+   <div class="rv ph" style="height:230px"><img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1000&q=75" alt="Quán cà phê" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cap">Lực lượng trẻ trên tuyến đầu</span></div>
+   <div class="c b rv" style="flex:1"><h3>Đặc điểm lực lượng lao động</h3>
+    <ul class="ck" style="font-size:22px"><li style="font-size:22px"><b>Nhân viên trẻ</b> (part-time, sinh viên) làm nòng cốt: pha chế, phục vụ, thu ngân, hỗ trợ vận hành.</li><li style="font-size:22px"><b>Nhân sự quản lý:</b> quản lý cửa hàng, giám sát khu vực, các bộ phận điều hành, đào tạo, nhân sự.</li><li style="font-size:22px"><b>Đặc thù:</b> làm theo ca, đứng lâu, phục vụ liên tục, yêu cầu cao về tốc độ và chất lượng.</li></ul></div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 7. 4 VẤN ĐỀ ============ -->
+<section class="slide" data-fx="skew" data-title="4 vấn đề quản trị nhân sự">
+ <div class="k rv">Phần 2 · Thực trạng Highlands Coffee</div>
+ <h2 class="t rv">4 vấn đề nổi bật trong <em>quản trị nhân sự</em></h2>
+ <div class="g2" style="flex:1;gap:26px">
+  <div class="c rv row" style="gap:24px;align-items:center"><div style="color:var(--red)"><svg class="ic pulse" style="width:96px;height:96px"><use href="#i-users"/></svg></div>
+   <div><h3>1 · Áp lực tuyển dụng &amp; duy trì</h3><p style="font-size:23px">Mở rộng chuỗi liên tục đòi hỏi bổ sung nhân sự pha chế, phục vụ, quản lý và thay thế người nghỉ việc thường xuyên.</p></div></div>
+  <div class="c b rv row" style="gap:24px;align-items:center"><div style="color:var(--gold)"><svg class="ic" viewBox="0 0 24 24" style="width:96px;height:96px"><path d="M3 17a9 9 0 1 1 18 0"/><path d="M12 17l5-6" class="shake"/><circle cx="12" cy="17" r="1.6" fill="currentColor"/></svg></div>
+   <div><h3>2 · Áp lực công việc tại cửa hàng</h3><ul class="ck"><li style="font-size:22px;margin:4px 0">Cường độ cao giờ cao điểm, cuối tuần, ngày lễ</li><li style="font-size:22px;margin:4px 0">Phải làm nhiều việc cùng lúc</li><li style="font-size:22px;margin:4px 0">Tuân thủ chặt quy trình phục vụ, vệ sinh, chất lượng</li><li style="font-size:22px;margin:4px 0">Ca làm ảnh hưởng thời gian học tập</li></ul></div></div>
+  <div class="c g rv row" style="gap:24px;align-items:center"><div style="color:var(--red2)"><svg class="ic" style="width:96px;height:96px"><use class="slidex" href="#i-logout"/></svg></div>
+   <div><h3>3 · Khó giữ chân nhân viên trẻ</h3><p style="font-size:23px">Họ cần thu nhập, lịch linh hoạt, môi trường tích cực và cơ hội phát triển. Công việc lặp lại, áp lực cao hay thiếu thăng tiến sẽ khiến họ dễ tìm việc khác.</p></div></div>
+  <div class="c r rv row" style="gap:24px;align-items:center"><div style="color:var(--gold)"><svg class="ic" viewBox="0 0 24 24" style="width:96px;height:96px"><g class="spin f"><circle cx="12" cy="12" r="8" stroke-width="4" stroke-dasharray="3.1 3.1"/><circle cx="12" cy="12" r="5"/></g><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg></div>
+   <div><h3>4 · Thách thức đào tạo &amp; đồng bộ chất lượng</h3><p style="font-size:23px">Nhân viên thay đổi liên tục khiến tốn nguồn lực tuyển dụng, hướng dẫn, đào tạo lại; ảnh hưởng độ ổn định đội ngũ và chất lượng phục vụ giữa các quán.</p></div></div>
+ </div>
+</section>
+
+<!-- ============ 8. ĐIỂM MẠNH & THÁCH THỨC ============ -->
+<section class="slide" data-fx="flipx" data-title="Điểm mạnh & thách thức">
+ <div class="k rv">Phần 2 · Thực trạng Highlands Coffee</div>
+ <h2 class="t rv" style="margin-bottom:20px">Bức tranh toàn cảnh: <em>điểm mạnh &amp; thách thức</em></h2>
+ <div style="display:grid;grid-template-columns:1fr 70px 1fr;gap:14px 14px;align-items:center">
+  <div class="rv band g" style="text-align:center;font:800 26px Montserrat">ĐIỂM MẠNH</div><div></div><div class="rv band r" style="text-align:center;font:800 26px Montserrat">THÁCH THỨC</div>
+  <div class="c rv cr" style="padding:16px 26px"><p>Thương hiệu lớn, hệ thống rộng</p></div><div class="rv" style="text-align:center;font:800 30px Montserrat;color:var(--red)">⇄</div><div class="c rv" style="padding:16px 26px"><p>Nhu cầu tuyển dụng thường xuyên</p></div>
+  <div class="c rv cr" style="padding:16px 26px"><p>Quy trình vận hành đồng bộ</p></div><div class="rv" style="text-align:center;font:800 30px Montserrat;color:var(--red)">⇄</div><div class="c rv" style="padding:16px 26px"><p>Áp lực làm việc theo ca</p></div>
+  <div class="c rv cr" style="padding:16px 26px"><p>Có cơ hội phát triển lên vị trí quản lý</p></div><div class="rv" style="text-align:center;font:800 30px Montserrat;color:var(--red)">⇄</div><div class="c rv" style="padding:16px 26px"><p>Khó giữ chân lao động trẻ</p></div>
+  <div class="c rv cr" style="padding:16px 26px"><p>Nhiều vị trí phù hợp lao động trẻ</p></div><div class="rv" style="text-align:center;font:800 30px Montserrat;color:var(--red)">⇄</div><div class="c rv" style="padding:16px 26px"><p>Chi phí đào tạo và thay thế nhân sự</p></div>
+ </div>
+ <div class="rv band b" style="margin-top:20px;font-size:24px"><b style="color:var(--gold)">NHẬN ĐỊNH TRỌNG TÂM:</b> Highlands Coffee có lợi thế về quy mô và khả năng tạo việc làm, nhưng duy trì đội ngũ ổn định là thách thức đáng chú ý trong mô hình F&amp;B có nhiều vị trí tuyến đầu và cường độ phục vụ cao.</div>
+ <div class="rv band g" style="margin-top:14px;font-size:21px">⚠ <b>Lưu ý minh bạch số liệu:</b> chưa có số liệu công khai đáng tin cậy riêng của Highlands về tỷ lệ nghỉ việc, tỷ lệ nghỉ việc của Gen Z, lương bình quân hay tỷ lệ nhân viên bán thời gian. Các vấn đề trên không phải số liệu nội bộ đã được doanh nghiệp xác nhận.</div>
+</section>
+
+<!-- ============ 9. SỐ LIỆU GEN Z ============ -->
+<section class="slide" data-fx="zoomout" data-title="Biến động nhân sự Gen Z">
+ <div class="k rv">Phần 2 · Biến động nhân sự Gen Z tại Việt Nam (2025–2026)</div>
+ <h2 class="t rv" style="margin-bottom:16px">Gen Z đang <em>dịch chuyển việc làm</em> rõ rệt</h2>
+ <p class="rv" style="opacity:.85;margin-bottom:24px">Gen Z (sinh khoảng 1997–2012) đang trở thành lực lượng lao động quan trọng trong dịch vụ, bán lẻ, nhà hàng và đồ uống.</p>
+ <div class="g4" style="flex:1">
+  <div class="c rv" style="text-align:center"><div class="ringw"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="70" fill="none" stroke="#F3E9DF" stroke-width="14"/><circle class="rg" cx="80" cy="80" r="70" fill="none" stroke="#B22830" stroke-width="14" stroke-linecap="round" stroke-dasharray="440" transform="rotate(-90 80 80)" style="--off:283"/></svg><b><span class="count" data-to="35.7" data-dec="1" data-suf="%">0</span></b></div><p style="font-size:23px">Gen Z thuộc nhóm <b>chủ động nhảy việc</b> (khảo sát TopCV 2025)</p></div>
+  <div class="c b rv" style="text-align:center"><div class="ringw"><svg viewBox="0 0 160 160"><circle class="spin" cx="80" cy="80" r="70" fill="none" stroke="#D4A359" stroke-width="6" stroke-dasharray="6 14" stroke-linecap="round"/><circle cx="80" cy="80" r="52" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="10"/></svg><b style="color:var(--gold);font-size:44px"><span class="count" data-to="2.2" data-dec="1">0</span>&nbsp;năm</b></div><p style="font-size:23px">Thời gian làm việc <b>trung bình tại một doanh nghiệp</b></p></div>
+  <div class="c r rv" style="text-align:center"><div class="ringw"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="14"/><circle class="rg" cx="80" cy="80" r="70" fill="none" stroke="#D4A359" stroke-width="14" stroke-linecap="round" stroke-dasharray="440" transform="rotate(-90 80 80)" style="--off:40"/></svg><b style="color:#fff"><span class="count" data-to="91" data-suf="%">0</span></b></div><p style="font-size:23px">Nhà tuyển dụng <b>gặp khó khi quản lý Gen Z</b> (Robert Walters 2026)</p></div>
+  <div class="c g rv" style="text-align:center"><div class="ringw"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="14"/><circle class="rg" cx="80" cy="80" r="70" fill="none" stroke="#8B1E24" stroke-width="14" stroke-linecap="round" stroke-dasharray="440" transform="rotate(-90 80 80)" style="--off:273"/></svg><b style="color:var(--red2)"><span class="count" data-to="38" data-suf="%">0</span></b></div><p style="font-size:23px">Gen Z <b>dự kiến gắn bó 1–2 năm</b> với doanh nghiệp</p></div>
+ </div>
+ <div class="rv band b" style="margin-top:22px;font-size:22px">⚠ Đây là kết quả từ những khảo sát khác nhau, <b>không thể cộng gộp</b> hay xem là tỷ lệ nghỉ việc chung của toàn bộ Gen Z. <span style="opacity:.7">Nguồn: TopCV, RMIT Việt Nam, Robert Walters, báo Dân trí (2025–2026).</span></div>
+</section>
+
+<!-- ============ 10. 4 NGUYÊN NHÂN & BẰNG CHỨNG ============ -->
+<section class="slide" data-fx="spin" data-title="Nguyên nhân Gen Z nhảy việc">
+ <div class="k rv">Phần 2 · Vì sao Gen Z thường xuyên đổi việc?</div>
+ <h2 class="t rv" style="margin-bottom:20px">4 nguyên nhân &amp; <em>bằng chứng nghiên cứu</em></h2>
+ <div class="row" style="flex:1;gap:28px">
+  <div class="col" style="flex:1.15;gap:14px">
+   <div class="c rv" style="padding:16px 26px"><h3 style="font-size:26px;margin-bottom:4px"><span style="color:var(--red)">①</span> Thu nhập &amp; chế độ đãi ngộ</h3><p style="font-size:21px">Mong lương tương xứng công sức; quan tâm thưởng, phụ cấp, bảo hiểm; sẵn sàng chuyển việc khi có thu nhập tốt hơn.</p></div>
+   <div class="c rv" style="padding:16px 26px"><h3 style="font-size:26px;margin-bottom:4px"><span style="color:var(--red)">②</span> Áp lực &amp; môi trường làm việc</h3><p style="font-size:21px">Không muốn môi trường quá áp đặt; dễ mất động lực khi chịu áp lực và bị quản lý thiếu linh hoạt; đề cao tôn trọng, giao tiếp, cân bằng cuộc sống.</p></div>
+   <div class="c rv" style="padding:16px 26px"><h3 style="font-size:26px;margin-bottom:4px"><span style="color:var(--red)">③</span> Thiếu cơ hội phát triển</h3><p style="font-size:21px">Không muốn công việc lặp đi lặp lại; muốn học kỹ năng mới; muốn thăng tiến theo năng lực thay vì thâm niên.</p></div>
+   <div class="c rv" style="padding:16px 26px"><h3 style="font-size:26px;margin-bottom:4px"><span style="color:var(--red)">④</span> Tâm lý &amp; định hướng nghề nghiệp</h3><p style="font-size:21px">Thích thử nhiều công việc để tìm môi trường phù hợp; không xem gắn bó lâu dài là tiêu chí duy nhất của sự ổn định nghề nghiệp.</p></div>
+  </div>
+  <div class="col" style="flex:1;gap:18px">
+   <div class="c b rv" style="flex:1"><div class="chip" style="margin-bottom:8px">UEH 2025 · 318 Gen Z (18–28 tuổi) · TP.HCM</div><p style="font-size:22px">Mối quan hệ với <b style="color:var(--gold)">đồng nghiệp và cấp trên</b> là yếu tố tác động trực tiếp nổi bật nhất đến xu hướng nhảy việc. Lương thưởng, văn hóa và cơ hội phát triển ảnh hưởng đến sự hài lòng trong công việc.</p></div>
+   <div class="c r rv" style="flex:1"><div class="chip" style="margin-bottom:8px">Hà Nội 2025 · 228 Gen Z</div><p style="font-size:22px;margin-bottom:8px">4 yếu tố tác động đến ý định nghỉ việc:</p><div><span class="chip" style="font-size:19px;padding:6px 16px">Lương thưởng</span><span class="chip blink" style="font-size:19px;padding:6px 16px;background:var(--gold);color:var(--br2)">Áp lực công việc ★ mạnh nhất</span><span class="chip" style="font-size:19px;padding:6px 16px">Văn hóa doanh nghiệp</span><span class="chip" style="font-size:19px;padding:6px 16px">Đào tạo – phát triển</span></div></div>
+  </div>
+ </div>
+ <div class="rv band g" style="margin-top:16px;font-size:23px"><b>Nhận định:</b> Gen Z không chỉ nghỉ việc vì lương thấp. Quan hệ nơi làm việc, áp lực, thiếu ghi nhận và hạn chế cơ hội phát triển cũng là nguyên nhân quan trọng.</div>
+</section>
+
+<!-- ============ 11. KỲ VỌNG GEN Z ↔ HIGHLANDS ============ -->
+<section class="slide" data-fx="slideup" data-title="Va chạm giữa kỳ vọng và đặc thù">
+ <div class="k rv">Phần 2 · Mối liên hệ Gen Z và Highlands Coffee</div>
+ <h2 class="t rv" style="margin-bottom:20px">Khi <em>kỳ vọng Gen Z</em> va chạm đặc thù Highlands</h2>
+ <div class="row" style="flex:1;gap:34px">
+  <div style="flex:1.35;display:grid;grid-template-columns:1fr 50px 1fr;gap:12px 8px;align-content:start;align-items:stretch">
+   <div class="rv band g" style="text-align:center;font:800 22px Montserrat;padding:12px">KỲ VỌNG CỦA GEN Z</div><div></div><div class="rv band r" style="text-align:center;font:800 22px Montserrat;padding:12px">THÁCH THỨC TẠI HIGHLANDS</div>
+   <div class="c cr rv" style="padding:14px 22px"><p style="font-size:23px"><b>Muốn thu nhập phù hợp</b></p></div><div class="rv" style="display:flex;align-items:center;justify-content:center;font:800 28px Montserrat;color:var(--red)">→</div><div class="c rv" style="padding:14px 22px"><p style="font-size:22px">Khó giữ chân nhân viên nếu đãi ngộ chưa đáp ứng kỳ vọng</p></div>
+   <div class="c cr rv" style="padding:14px 22px"><p style="font-size:23px"><b>Ưu tiên sự linh hoạt</b></p></div><div class="rv" style="display:flex;align-items:center;justify-content:center;font:800 28px Montserrat;color:var(--red)">→</div><div class="c rv" style="padding:14px 22px"><p style="font-size:22px">Khó bố trí lịch làm việc phù hợp cho nhân viên trẻ</p></div>
+   <div class="c cr rv" style="padding:14px 22px"><p style="font-size:23px"><b>Không thích áp lực kéo dài</b></p></div><div class="rv" style="display:flex;align-items:center;justify-content:center;font:800 28px Montserrat;color:var(--red)">→</div><div class="c rv" style="padding:14px 22px"><p style="font-size:22px">Nguy cơ nghỉ việc khi cường độ phục vụ cao</p></div>
+   <div class="c cr rv" style="padding:14px 22px"><p style="font-size:23px"><b>Muốn được ghi nhận</b></p></div><div class="rv" style="display:flex;align-items:center;justify-content:center;font:800 28px Montserrat;color:var(--red)">→</div><div class="c rv" style="padding:14px 22px"><p style="font-size:22px">Giảm động lực nếu đóng góp không được đánh giá</p></div>
+   <div class="c cr rv" style="padding:14px 22px"><p style="font-size:23px"><b>Muốn phát triển nhanh</b></p></div><div class="rv" style="display:flex;align-items:center;justify-content:center;font:800 28px Montserrat;color:var(--red)">→</div><div class="c rv" style="padding:14px 22px"><p style="font-size:22px">Dễ chuyển việc nếu thiếu lộ trình thăng tiến</p></div>
+  </div>
+  <div class="col" style="flex:.65;gap:10px">
+   <div class="rv chip" style="align-self:flex-start;border-color:var(--red);color:var(--red2);background:#fff">4 HỆ QUẢ KINH DOANH</div>
+   <div class="c b rv" style="padding:16px 22px"><h3 style="font-size:23px;margin-bottom:4px">① Tăng chi phí tuyển dụng &amp; đào tạo</h3><p style="font-size:19px">Liên tục tìm người thay thế, hướng dẫn quy trình, đào tạo nghiệp vụ.</p></div>
+   <div class="rv" style="text-align:center;color:var(--red);font-size:26px;line-height:1">▼</div>
+   <div class="c r rv" style="padding:16px 22px"><h3 style="font-size:23px;margin-bottom:4px">② Giảm chất lượng phục vụ</h3><p style="font-size:19px">Nhân viên mới phục vụ chậm, xử lý tình huống chưa tốt, thiếu đồng đều.</p></div>
+   <div class="rv" style="text-align:center;color:var(--red);font-size:26px;line-height:1">▼</div>
+   <div class="c b rv" style="padding:16px 22px"><h3 style="font-size:23px;margin-bottom:4px">③ Quá tải người ở lại</h3><p style="font-size:19px">Gánh thêm nhiệm vụ, mệt mỏi và phát sinh ý định nghỉ việc.</p></div>
+   <div class="rv" style="text-align:center;color:var(--red);font-size:26px;line-height:1">▼</div>
+   <div class="c r rv" style="padding:16px 22px"><h3 style="font-size:23px;margin-bottom:4px">④ Mất ổn định đội ngũ</h3><p style="font-size:19px">Khó xây đội ngũ có kinh nghiệm, phối hợp tốt và gắn bó với cửa hàng.</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 12. BẢNG 4 NGUYÊN NHÂN ============ -->
+<section class="slide" data-fx="curtain" data-title="Bảng tổng hợp 4 nguyên nhân">
+ <div class="k rv">Phần 3 · Phân tích chuyên sâu nguyên nhân (6 phút)</div>
+ <h2 class="t rv" style="margin-bottom:18px">4 nguyên nhân cốt lõi: <em>tình huống quản lý anh T.</em></h2>
+ <div style="display:grid;grid-template-columns:330px 1fr 620px;gap:12px 14px">
+  <div class="rv band r" style="padding:12px 20px;font:800 21px Montserrat">GÓC ĐỘ LÝ THUYẾT</div><div class="rv band g" style="padding:12px 20px;font:800 21px Montserrat">HÀNH VI SAI LẦM CỦA QUẢN LÝ (ANH T.)</div><div class="rv band b" style="padding:12px 20px;font:800 21px Montserrat">HỆ QUẢ TRỰC TIẾP LÊN NHÂN SỰ</div>
+  <div class="c b rv" style="padding:16px 22px"><h3 style="font-size:23px;margin:0">① Lãnh đạo tình huống<br><span style="font:500 19px 'Be Vietnam Pro';opacity:.8">Hersey &amp; Blanchard</span></h3></div><div class="c rv" style="padding:16px 22px"><p style="font-size:21px">Dùng phong cách <b>Độc đoán &amp; quản lý vi mô</b> với Trưởng ca/nhân viên cứng (nhóm năng lực cao). Trút giận thay vì điều phối.</p></div><div class="c cr rv" style="padding:16px 22px"><p style="font-size:21px">Triệt tiêu quyền tự chủ, biến nhân sự từ <b>“Thiện chí cao”</b> thành <b>“Chống đối &amp; từ bỏ”</b>.</p></div>
+  <div class="c b rv" style="padding:16px 22px"><h3 style="font-size:23px;margin:0">② Thuyết 2 nhân tố<br><span style="font:500 19px 'Be Vietnam Pro';opacity:.8">Herzberg</span></h3></div><div class="c rv" style="padding:16px 22px"><p style="font-size:21px">Lạm dụng <b>Yếu tố duy trì</b> theo hướng tiêu cực (phạt tiền, trừ lương) và bỏ qua hoàn toàn <b>Yếu tố thúc đẩy</b> (ghi nhận, động viên).</p></div><div class="c cr rv" style="padding:16px 22px"><p style="font-size:21px">Bất mãn tột độ; nhân viên làm việc đối phó, không có động lực vượt qua giờ cao điểm.</p></div>
+  <div class="c b rv" style="padding:16px 22px"><h3 style="font-size:23px;margin:0">③ Tháp nhu cầu<br><span style="font:500 19px 'Be Vietnam Pro';opacity:.8">Maslow</span></h3></div><div class="c rv" style="padding:16px 22px"><p style="font-size:21px">Chặn đứng ở tầng <b>Sinh lý</b> (lương giờ thấp), phá vỡ tầng <b>An toàn</b> (đe dọa trừ lương) và chà đạp tầng <b>Tôn trọng</b> (mắng trước mặt khách).</p></div><div class="c cr rv" style="padding:16px 22px"><p style="font-size:21px">Tổn thương cái tôi của Gen Z (“mất mặt”), dẫn đến quyết định <b>nghỉ việc tập thể</b> ngay lập tức.</p></div>
+  <div class="c b rv" style="padding:16px 22px"><h3 style="font-size:23px;margin:0">④ Tâm lý &amp; quản trị khủng hoảng<br><span style="font:500 19px 'Be Vietnam Pro';opacity:.8">Góc nhìn bổ sung</span></h3></div><div class="c rv" style="padding:16px 22px"><p style="font-size:21px">Thiếu trí tuệ cảm xúc (EQ) và rơi vào bẫy <b>“chuyển giao áp lực”</b>: đổ áp lực KPI từ cấp trên xuống nhân viên cấp dưới.</p></div><div class="c cr rv" style="padding:16px 22px"><p style="font-size:21px">Mất uy tín lãnh đạo; phá vỡ tinh thần đồng đội đúng lúc quán cần đoàn kết nhất.</p></div>
+ </div>
+</section>
+
+<!-- ============ 13. PHÂN TÍCH SÂU ============ -->
+<section class="slide" data-fx="flip" data-title="Lệch pha lãnh đạo & phá vỡ động lực kép">
+ <div class="k rv">Phần 3 · Phân tích chuyên sâu nguyên nhân</div>
+ <h2 class="t rv" style="margin-bottom:20px">Lệch pha lãnh đạo &amp; <em>phá vỡ động lực kép</em></h2>
+ <div class="row" style="flex:1;gap:28px">
+  <div class="c rv col" style="flex:1;gap:12px"><div class="chip l" style="align-self:flex-start;font-size:20px">KHỐI 1 · Điều phối khẩn cấp ≠ Trút giận cá nhân</div>
+   <p style="font-size:22px">Trưởng ca và pha chế lâu năm có <b>độ trưởng thành cao</b>, đáng lẽ cần phong cách <b>Tham gia/Ủy quyền</b>. Trong giờ cao điểm quản lý có thể ra mệnh lệnh nhanh, nhưng anh T. nhầm điều đó với việc mạt sát nhân viên.</p>
+   <div class="c g" style="padding:16px 22px"><b style="font-size:20px;letter-spacing:.1em">✔ ĐÁNG LẼ NÊN</b><p style="font-size:22px">Hỏi nhanh giải pháp: điều hướng khách sang món trà/đá xay, tạm ngưng nhận cà phê máy, xin lỗi khách.</p></div>
+   <div class="c r" style="padding:16px 22px"><b style="font-size:20px;letter-spacing:.1em">✖ ANH T. ĐÃ LÀM</b><p style="font-size:22px">Mạt sát nhân viên, dọa trừ lương, áp đặt và quản lý vi mô → từ “Thiện chí cao” sang “Chống đối”.</p></div>
+  </div>
+  <div class="c b rv col" style="flex:1;gap:12px"><div class="chip" style="align-self:flex-start;font-size:20px">KHỐI 2 · Phá vỡ động lực kép (Herzberg + Maslow)</div>
+   <p style="font-size:22px">Phạt vỡ ly, đi trễ nhưng <b>không một lời khen</b> khi quán quá tải. Mắng trước mặt khách đã đánh sập cùng lúc tầng An toàn (sợ mất thu nhập) và tầng Tôn trọng (chạm tự ái, thể diện của Gen Z).</p>
+   <div class="col" style="gap:8px;margin-top:6px">
+    <div class="band blink" style="background:var(--red);padding:12px 22px;font-size:23px">✖ Tầng Tôn trọng: bị chà đạp</div>
+    <div class="band blink" style="background:var(--red2);padding:12px 22px;font-size:23px;animation-delay:.3s">✖ Tầng An toàn: bị đe dọa trừ lương</div>
+    <div class="band" style="background:#5a3a26;padding:12px 22px;font-size:23px">▲ Tầng Sinh lý: lương 22.000đ/giờ mới chỉ chạm tầng này</div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 14. BẪY CHUYỂN GIAO ÁP LỰC + QUOTE ============ -->
+<section class="slide dk" data-fx="blur" data-title="Bẫy chuyển giao áp lực">
+ <div class="k rv">Phần 3 · Góc nhìn bổ sung: trí tuệ cảm xúc (EQ)</div>
+ <h2 class="t rv" style="font-size:52px;margin-bottom:20px">Bẫy <em>“Chuyển giao áp lực”</em></h2>
+ <div class="rv row" style="align-items:center;gap:18px">
+  <div class="c r" style="width:350px;text-align:center"><h3 style="font-size:24px">TỔNG CÔNG TY</h3><p style="font-size:21px">Áp lực KPI</p></div>
+  <div style="flex:1"><div class="flow"></div></div>
+  <div style="text-align:center;width:290px"><svg viewBox="0 0 24 24" style="width:150px;height:150px;fill:rgba(212,163,89,.25);stroke:#D4A359;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round" class="pulse"><use href="#i-shield"/></svg><div style="font:800 22px Montserrat;color:var(--gold)">QUẢN LÝ = TẤM KHIÊN?</div></div>
+  <div style="flex:1"><div class="flow" style="animation-duration:.6s;background:repeating-linear-gradient(90deg,#B22830 0 24px,transparent 24px 40px);background-size:80px 100%"></div></div>
+  <div class="c" style="width:350px;text-align:center;background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2)"><h3 style="font-size:24px">NHÂN VIÊN PART-TIME</h3><p style="font-size:21px">Bị xả áp lực</p></div>
+ </div>
+ <p class="rv" style="margin:22px 0 0;max-width:1500px;font-size:24px;opacity:.9">Thay vì làm <b>“tấm khiên”</b> chắn áp lực KPI và truyền lửa cho đội ngũ, anh T. <b>xả toàn bộ căng thẳng</b> lên vai nhân viên part-time. Khi người đứng đầu hoảng loạn, cả tập thể mất phương hướng.</p>
+ <div class="rv" style="flex:1;display:flex;align-items:center;justify-content:center;margin-top:10px">
+  <div style="position:relative;max-width:1500px;text-align:center;border:3px solid var(--gold);border-radius:36px;padding:34px 80px;background:linear-gradient(135deg,rgba(178,40,48,.4),rgba(35,20,11,.6))">
+   <span style="position:absolute;left:28px;top:-30px;font:900 130px/1 Montserrat;color:var(--gold)">“</span>
+   <p style="font:800 44px/1.35 Montserrat">Nhân viên không rời bỏ Highlands Coffee, họ rời bỏ <span style="color:var(--gold)">một người quản lý không biết tôn trọng họ.</span></p>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 15. GIẢI PHÁP NGẮN HẠN ============ -->
+<section class="slide" data-fx="circle" data-title="Giải pháp ngắn hạn">
+ <div class="k rv">Phần 4 · Đề xuất giải pháp ngắn hạn</div>
+ <h2 class="t rv">Ổn định vận hành: <em>4 hành động trực diện</em></h2>
+ <div class="g4" style="flex:1">
+  <div class="c rv col" style="gap:10px"><div style="color:var(--red)"><svg class="ic" viewBox="0 0 24 24" style="width:92px;height:92px"><circle cx="12" cy="12" r="10"/><path class="spin f" style="transform-origin:12px 12px" d="M12 12V6"/><path class="spin" style="transform-origin:12px 12px;animation-duration:4s" d="M12 12l4 2"/></svg></div><div class="num" style="font-size:54px">01</div><h3>Tối ưu hóa ca làm việc</h3><p style="font-size:23px">Phân bổ nhân sự linh hoạt theo lưu lượng khách thực tế từng khung giờ, hạn chế tăng ca và quá tải giờ cao điểm.</p></div>
+  <div class="c b rv col" style="gap:10px"><div style="color:var(--gold)"><svg class="ic" style="width:92px;height:92px"><use class="pulse" href="#i-users"/></svg></div><div class="num" style="font-size:54px;color:var(--gold)">02</div><h3>Nâng năng lực quản lý cửa hàng</h3><p style="font-size:23px">Đào tạo giao tiếp, kiểm soát cảm xúc (EQ), lắng nghe và giải quyết mâu thuẫn công bằng.</p></div>
+  <div class="c g rv col" style="gap:10px"><div style="color:var(--red2)"><svg class="ic" viewBox="0 0 24 24" style="width:92px;height:92px"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><circle class="bn" cx="8" cy="10" r="1.2" fill="currentColor"/><circle class="bn" cx="12" cy="10" r="1.2" fill="currentColor"/><circle class="bn" cx="16" cy="10" r="1.2" fill="currentColor"/></svg></div><div class="num" style="font-size:54px;color:var(--red2)">03</div><h3>Cơ chế lắng nghe thực chất</h3><p style="font-size:23px">Trao đổi ngắn định kỳ hoặc khảo sát ẩn danh; cam kết tiếp nhận và có hướng giải quyết cụ thể, không khảo sát cho có.</p></div>
+  <div class="c r rv col" style="gap:10px"><div style="color:var(--gold)"><svg class="ic" style="width:92px;height:92px"><use class="twk" href="#i-star"/></svg></div><div class="num" style="font-size:54px;color:#fff">04</div><h3>Tăng cường ghi nhận &amp; khen thưởng</h3><p style="font-size:23px">Tuyên dương kịp thời, thưởng nóng cho người làm tốt, hỗ trợ đồng đội vượt cao điểm.</p></div>
+ </div>
+</section>
+
+<!-- ============ 16. GIẢI PHÁP DÀI HẠN ============ -->
+<section class="slide" data-fx="skew" data-title="Giải pháp dài hạn">
+ <div class="k rv">Phần 4 · Đề xuất giải pháp dài hạn</div>
+ <h2 class="t rv" style="font-size:52px;margin-bottom:18px">Phát triển bền vững: <em>4 trụ cột chiến lược</em></h2>
+ <div class="g4" style="gap:20px">
+  <div class="c r rv" style="padding:20px 24px"><h3 style="font-size:24px">① Hoàn thiện chính sách đãi ngộ</h3><p style="font-size:20px">Rà soát lương, thưởng, phụ cấp (ca gãy, lễ Tết); minh bạch tiêu chí đánh giá nhân viên.</p></div>
+  <div class="c b rv" style="padding:20px 24px"><h3 style="font-size:24px">② Lộ trình thăng tiến rõ ràng</h3><p style="font-size:20px">Tạo cơ hội phát triển từ nhân viên lên Trưởng ca, Trợ lý quản lý, Quản lý cửa hàng.</p></div>
+  <div class="c g rv" style="padding:20px 24px"><h3 style="font-size:24px">③ Chuẩn hóa hội nhập 30–60–90 ngày</h3><p style="font-size:20px">Chương trình hướng dẫn bài bản, có người kèm cặp (Buddy/Mentor) và đánh giá định kỳ.</p></div>
+  <div class="c rv" style="padding:20px 24px"><h3 style="font-size:24px">④ Văn hóa làm việc tích cực</h3><p style="font-size:20px">Tôn trọng, công bằng, trao quyền đóng góp ý kiến và gắn kết tập thể.</p></div>
+ </div>
+ <div class="row" style="flex:1;gap:24px;margin-top:20px">
+  <div class="c cr rv" style="flex:1.1;display:flex;flex-direction:column"><b style="font:800 20px Montserrat;letter-spacing:.14em;color:var(--red)">LỘ TRÌNH THĂNG TIẾN (CAREER PATH)</b>
+   <div style="flex:1;display:flex;align-items:flex-end;gap:10px;margin-top:10px;min-height:210px">
+    <div class="step" style="height:30%;background:#5a3a26">Nhân viên Part-time / Full-time</div><div class="step" style="height:52%;background:#8B1E24">Trưởng ca (Shift Leader)</div><div class="step" style="height:76%;background:#B22830">Trợ lý quản lý</div><div class="step" style="height:100%;background:#D4A359;color:#23140B">Quản lý cửa hàng ★</div>
+   </div></div>
+  <div class="c b rv" style="flex:1;display:flex;flex-direction:column"><b style="font:800 20px Montserrat;letter-spacing:.14em;color:var(--gold)">ONBOARDING 30–60–90 NGÀY</b>
+   <div style="flex:1;display:flex;align-items:center;margin-top:10px">
+    <div style="position:relative;display:flex;justify-content:space-between;width:100%;text-align:center">
+     <div style="position:absolute;left:8%;right:8%;top:30px"><div class="flow" style="height:8px;border-radius:4px"></div></div>
+     <div style="position:relative;width:32%"><div class="pulse" style="width:60px;height:60px;margin:0 auto 10px;border-radius:50%;background:var(--red);font:800 22px/60px Montserrat">30</div><p style="font-size:19px">Được hướng dẫn cụ thể</p></div>
+     <div style="position:relative;width:32%"><div class="pulse" style="width:60px;height:60px;margin:0 auto 10px;border-radius:50%;background:var(--red);font:800 22px/60px Montserrat;animation-delay:.3s">60</div><p style="font-size:19px">Có người kèm cặp hỗ trợ</p></div>
+     <div style="position:relative;width:32%"><div class="pulse" style="width:60px;height:60px;margin:0 auto 10px;border-radius:50%;background:var(--gold);color:#23140B;font:800 22px/60px Montserrat;animation-delay:.6s">90</div><p style="font-size:19px">Được đánh giá định kỳ</p></div>
+    </div></div></div>
+ </div>
+</section>
+
+<!-- ============ 17. KẾT LUẬN ============ -->
+<section class="slide dk" data-fx="zoomin" data-title="Kết luận & Q&A">
+ <div class="row" style="flex:1;gap:50px;align-items:center">
+  <div style="flex:1.25">
+   <div class="k rv">Kết luận &amp; thông điệp cốt lõi</div>
+   <h2 class="t rv" style="font-size:50px;margin-bottom:22px">Chuyển dịch tư duy <em>quản trị nhân sự</em></h2>
+   <div class="rv row" style="align-items:center;gap:18px;margin-bottom:20px">
+    <div class="c" style="flex:1;background:rgba(255,255,255,.08);color:#f6e9dc;border-color:rgba(255,255,255,.2);padding:18px 24px"><p style="font-size:22px;opacity:.7">Từ</p><p style="font-size:26px"><b>“Tuyển mới liên tục để bù đắp”</b></p></div>
+    <div class="slidex" style="font:900 56px Montserrat;color:var(--gold)">➜</div>
+    <div class="c r" style="flex:1.1;padding:18px 24px"><p style="font-size:22px;opacity:.85">Sang</p><p style="font-size:26px"><b>“Giữ chân, phát triển và trao quyền cho nhân sự hiện tại”</b></p></div>
+   </div>
+   <div class="rv" style="margin-bottom:12px"><span class="chip" style="font-size:21px">↓ Giảm tỷ lệ nghỉ việc</span><span class="chip" style="font-size:21px">↑ Nâng cao sự hài lòng</span><span class="chip" style="font-size:21px">★ Tăng gắn bó lâu dài</span></div>
+   <div class="rv" style="position:relative;border-left:6px solid var(--gold);padding:8px 0 8px 28px;margin-top:8px"><p style="font:700 31px/1.4 Montserrat">“Một doanh nghiệp quản trị nhân sự tốt không chỉ là doanh nghiệp tuyển được nhiều người, mà còn là doanh nghiệp <span style="color:var(--gold)">khiến những người phù hợp muốn ở lại và phát triển lâu dài.</span>”</p></div>
+  </div>
+  <div class="rv" style="flex:.75;position:relative;height:780px">
+   <div class="ph" style="height:100%"><img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=900&q=75" alt="Quán cà phê" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cap" style="font-size:34px;left:34px;bottom:34px;line-height:1.2">Cảm ơn thầy cô<br>và các bạn đã lắng nghe!<br><span style="color:var(--gold)">Q&amp;A ☕</span></span></div>
+   <svg class="spin" viewBox="0 0 120 120" style="position:absolute;right:-30px;top:-30px;width:150px"><circle cx="60" cy="60" r="54" fill="none" stroke="#D4A359" stroke-width="3" stroke-dasharray="3 10" stroke-linecap="round"/></svg>
+  </div>
+ </div>
+</section>
+
+</div><!-- /stage -->
+
+<div id="notes"></div>
+<div id="ctl"><button id="prev">← Trước</button><button id="next">Tiếp →</button><button id="nb">📝 Ghi chú (N)</button><button id="fs">⛶ Toàn màn hình (F)</button></div>
+<div id="count"></div>
+
+<script>
+/* ===== GHI CHÚ THUYẾT TRÌNH (sửa tự do) ===== */
+const NOTES=[
+"Giới thiệu đề tài 3: tạo động lực và lựa chọn phong cách lãnh đạo tại Highlands Coffee, từ bài toán giữ chân nhân sự Gen Z trong chuỗi F&B. Bài gồm 4 phần: cơ sở lý thuyết, thực trạng, phân tích nguyên nhân và giải pháp.",
+"Điểm qua 4 phần của bài. Có thể bấm vào từng thẻ để nhảy tới phần tương ứng.",
+"Maslow có 5 tầng nhu cầu: Sinh lý → An toàn → Xã hội → Được tôn trọng → Tự thể hiện. Giai đoạn đầu, nhân viên part-time đi làm để trang trải cuộc sống (lương theo giờ, phụ cấp ca gãy, tiền tips, lịch ổn định). Giai đoạn gắn bó, điều giữ chân họ là đồng nghiệp hòa đồng và quản lý biết lắng nghe, góp ý riêng tư, không quát mắng trước mặt khách.",
+"Herzberg tách hai nhóm yếu tố. Yếu tố duy trì (lương, điều kiện làm việc, quy định chấm công, phạt lỗi): thiếu hoặc quá khắt khe sẽ gây bất mãn ngay. Yếu tố thúc đẩy (thành tựu, ghi nhận, trách nhiệm, thăng tiến lên trưởng ca): thiếu thì chỉ dừng ở mức 'không bất mãn'. Nhấn mạnh: tăng lương mà không khen ngợi thì cũng không có động lực.",
+"Hersey & Blanchard: không có phong cách vạn năng. Quản lý đổi cách dẫn dắt theo độ trưởng thành (năng lực + thiện chí). Đi lần lượt: Chỉ đạo cho người mới, Chỉ dẫn cho người còn lúng túng, Tham gia cho người thạo việc nhưng bất mãn, Ủy quyền cho nhân sự nòng cốt và Trưởng ca.",
+"Quy mô: cuối 2025 có 947 cửa hàng tại Việt Nam, toàn hệ thống (Việt Nam và Philippines) 985 cửa hàng, mở mới 134 cửa hàng trong năm 2025, hơn 12.000 nhân viên theo thông tin công bố năm 2026. Nhấn mạnh đặc thù làm theo ca, đứng lâu, tốc độ cao. Nguồn quy mô: CafeF (2026).",
+"Bốn vấn đề: áp lực tuyển dụng và duy trì; áp lực công việc tại cửa hàng; khó giữ chân nhân viên trẻ; thách thức đào tạo và đồng bộ chất lượng khi nhân sự thay đổi liên tục.",
+"Điểm mạnh là thương hiệu lớn, quy trình đồng bộ, có cơ hội lên quản lý, nhiều vị trí hợp lao động trẻ. Thách thức là tuyển dụng thường xuyên, áp lực ca, khó giữ lao động trẻ, chi phí đào tạo và thay thế. Lưu ý quan trọng: chưa có số liệu công khai riêng của Highlands về tỷ lệ nghỉ việc hay lương bình quân, nên không nói đây là số liệu nội bộ.",
+"Các con số đến từ những khảo sát khác nhau (TopCV, RMIT Việt Nam, Robert Walters, Dân trí) nên không cộng gộp và không xem là tỷ lệ nghỉ việc chung của Gen Z. Chúng cho thấy xu hướng dịch chuyển việc làm khá rõ.",
+"Bốn nhóm nguyên nhân: thu nhập, áp lực và môi trường, thiếu cơ hội phát triển, tâm lý và định hướng nghề nghiệp. Hai bằng chứng: nghiên cứu UEH 2025 (318 Gen Z tại TP.HCM) cho thấy quan hệ với đồng nghiệp và cấp trên tác động nổi bật; nghiên cứu Hà Nội 2025 (228 người) cho thấy áp lực công việc tác động mạnh nhất. Kết luận: Gen Z không chỉ nghỉ việc vì lương thấp.",
+"Đọc theo từng cặp kỳ vọng và thách thức, rồi chốt chuỗi 4 hệ quả kinh doanh: tăng chi phí tuyển dụng và đào tạo, giảm chất lượng phục vụ, quá tải người ở lại, mất ổn định đội ngũ.",
+"Dẫn nhập: từ tình huống chi nhánh X, nhóm phân tích 4 nguyên nhân cốt lõi khiến đội ngũ sụp đổ. Thời lượng phần này khoảng 6 phút. Đọc bảng theo hàng: góc độ lý thuyết, hành vi sai lầm của anh T., hệ quả trực tiếp.",
+"Khối 1: anh T. nhầm giữa điều phối khẩn cấp và trút giận. Đáng lẽ hỏi nhanh giải pháp, điều hướng sang trà/đá xay, tạm ngưng cà phê máy, xin lỗi khách. Khối 2: lương 22.000đ/giờ mới chạm tầng Sinh lý; phạt nhưng không khen; mắng trước mặt khách đánh sập cùng lúc tầng An toàn và Tôn trọng.",
+"Nguyên nhân sâu xa là thiếu EQ: thay vì làm tấm khiên chắn áp lực KPI và truyền lửa, anh T. xả căng thẳng lên nhân viên part-time. Đọc câu chốt: 'Nhân viên không rời bỏ Highlands Coffee, họ rời bỏ một người quản lý không biết tôn trọng họ. Vậy làm thế nào để sửa chữa sai lầm này? Xin mời bạn D trình bày Phần 4.'",
+"Bốn giải pháp ngắn hạn: tối ưu ca làm (phân bổ theo lượng khách, hạn chế tăng ca); nâng năng lực quản lý (giao tiếp, lắng nghe, giải quyết mâu thuẫn); cơ chế lắng nghe thực chất (khảo sát ẩn danh, phải có hướng giải quyết cụ thể); tăng ghi nhận và khen thưởng. Lý do: nhân viên nghỉ việc đôi khi vì cách họ được đối xử chứ không chỉ vì công việc.",
+"Bốn trụ cột dài hạn: hoàn thiện đãi ngộ và minh bạch đánh giá; lộ trình thăng tiến rõ ràng; chuẩn hóa hội nhập 30–60–90 ngày với người kèm cặp và đánh giá định kỳ; văn hóa tích cực. Mục tiêu: giảm tỷ lệ nghỉ việc, nâng sự hài lòng, tăng gắn bó lâu dài.",
+"Chốt: Highlands không nên chỉ tuyển thêm khi có người nghỉ, mà cần giữ chân người đang làm và phát hiện sớm vấn đề khiến họ không muốn gắn bó. Đọc câu kết, cảm ơn và mời đặt câu hỏi."
+];
+
+/* ===== LOGIC ===== */
+const FX=['fade','zoomin','zoomout','flip','flipx','slideup','blur','curtain','spin','skew','circle'];
+const stage=document.getElementById('stage'),slides=[...document.querySelectorAll('.slide')],N=slides.length;
+const bar=document.querySelector('#bar i'),countEl=document.getElementById('count'),notes=document.getElementById('notes');
+const prevB=document.getElementById('prev'),nextB=document.getElementById('next'),nb=document.getElementById('nb');
+let cur=-1,timer=null,lock=false,ph='1',userHl=false;
+
+function fit(){stage.style.transform='translate(-50%,-50%) scale('+Math.min(innerWidth/1920,innerHeight/1080)+')'}
+addEventListener('resize',fit);fit();
+
+// Hạt cà phê bay lơ lửng ở nền
+for(let k=0;k<12;k++){const b=document.createElement('div');b.className='bean';b.style.left=(Math.random()*1900)+'px';
+ b.style.animationDuration=(14+Math.random()*16)+'s';b.style.animationDelay=(-Math.random()*20)+'s';b.style.transform='scale('+(.6+Math.random())+')';stage.prepend(b)}
+
+function reset(s){s.classList.remove('active','leaving','noanim');FX.forEach(f=>s.classList.remove('in-'+f,'out-'+f))}
+function unshow(s){s.querySelectorAll('.rv').forEach(e=>e.classList.remove('show'))}
+
+function countUp(root){
+ root.querySelectorAll('.count').forEach(el=>{
+  const to=+el.dataset.to,dec=+(el.dataset.dec||0),suf=el.dataset.suf||'',pre=el.dataset.pre||'',t0=performance.now(),d=1500;
+  (function f(t){const p=Math.min(1,(t-t0)/d),e=1-Math.pow(1-p,3);
+   el.textContent=pre+(to*e).toLocaleString('vi-VN',{minimumFractionDigits:dec,maximumFractionDigits:dec})+suf;
+   if(p<1)requestAnimationFrame(f)})(t0)});
+}
+
+function go(i){
+ if(i<0||i>=N||i===cur)return;
+ const out=cur>=0?slides[cur]:null,inn=slides[i],back=i<cur;
+ const fx=back?'fade':(inn.dataset.fx||'fade');
+ clearTimeout(timer);
+ slides.forEach(s=>{if(s!==out&&s!==inn){reset(s);unshow(s)}});
+ if(out){reset(out);out.classList.add('leaving','out-'+fx)}
+ reset(inn);inn.classList.add('noanim');
+ const items=[...inn.querySelectorAll('.rv')];
+ items.forEach((el,k)=>{el.classList.remove('show');el.style.setProperty('--i',k)});
+ void inn.offsetWidth;inn.classList.remove('noanim');inn.classList.add('active','in-'+fx);
+ setTimeout(()=>items.forEach(e=>e.classList.add('show')),30);
+ setTimeout(()=>countUp(inn),500);
+ cur=i;
+ timer=setTimeout(()=>{if(out&&out!==slides[cur]){reset(out);unshow(out)}},1100);
+ bar.style.width=((i+1)/N*100)+'%';
+ countEl.textContent=String(i+1).padStart(2,'0')+' / '+N;
+ prevB.disabled=i===0;nextB.disabled=i===N-1;
+ notes.innerHTML='<b>GHI CHÚ THUYẾT TRÌNH · SLIDE '+(i+1)+'</b>'+NOTES[i];
+ history.replaceState(null,'','#'+(i+1));
+}
+const next=()=>go(cur+1),prev=()=>go(cur-1);
+prevB.onclick=prev;nextB.onclick=next;
+function toggleNotes(){notes.classList.toggle('open');nb.classList.toggle('on')}
+function toggleFs(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+nb.onclick=toggleNotes;document.getElementById('fs').onclick=toggleFs;
+
+document.addEventListener('keydown',e=>{
+ const k=e.key;
+ if(['ArrowRight','ArrowDown',' ','PageDown'].includes(k)){e.preventDefault();next()}
+ else if(['ArrowLeft','ArrowUp','PageUp'].includes(k)){e.preventDefault();prev()}
+ else if(k==='Home')go(0);else if(k==='End')go(N-1);
+ else if(k==='n'||k==='N')toggleNotes();else if(k==='f'||k==='F')toggleFs();
+});
+addEventListener('wheel',e=>{if(lock||Math.abs(e.deltaY)<8)return;lock=true;e.deltaY>0?next():prev();setTimeout(()=>lock=false,900)},{passive:true});
+let x0=0;
+document.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>60)dx<0?next():prev()});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-go]');if(t)go(+t.dataset.go)});
+
+// Tháp Maslow: rê chuột/bấm để làm nổi bật giai đoạn tương ứng (tự luân phiên khi chưa tương tác)
+function hl(p){document.querySelectorAll('[data-card]').forEach(c=>c.classList.toggle('hl',c.dataset.card===p))}
+document.querySelectorAll('[data-ph]').forEach(t=>{
+ const f=()=>{userHl=true;hl(t.dataset.ph)};t.addEventListener('mouseenter',f);t.addEventListener('click',f)});
+setInterval(()=>{if(cur===2&&!userHl){ph=ph==='1'?'2':'1';hl(ph)}},3000);
+
+go(Math.min(N-1,Math.max(0,(parseInt(location.hash.slice(1),10)||1)-1)));
+</script>
+</body>
+</html>
